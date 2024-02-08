@@ -2,7 +2,7 @@
 
 Chat Google GenAI Provider plugin for [LLM Workflow Engine](https://github.com/llm-workflow-engine/llm-workflow-engine)
 
-Access to [Google AI chat models](https://ai.google.dev/models) chat models.
+Access to [Google AI chat models](https://ai.google.dev/models).
 
 ## Installation
 
