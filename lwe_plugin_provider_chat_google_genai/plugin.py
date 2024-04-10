@@ -29,14 +29,23 @@ class ProviderChatGoogleGenai(Provider):
             "chat": True,
             'validate_models': True,
             'models': {
-                'chat-bison': {
+                'text-bison-001': {
                     'max_tokens': 4096,
                 },
-                'codechat-bison': {
-                    'max_tokens': 6144,
+                'chat-bison-001': {
+                    'max_tokens': 4096,
+                },
+                'gemini-1.0-pro': {
+                    'max_tokens': 32768,
+                },
+                'gemini-1.5-pro-latest': {
+                    "max_tokens": 131072,
                 },
                 'gemini-pro': {
-                    'max_tokens': 32768,
+                    "max_tokens": 131072,
+                },
+                'gemini-pro-latest': {
+                    "max_tokens": 131072,
                 },
             },
         }
