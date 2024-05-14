@@ -35,17 +35,21 @@ class ProviderChatGoogleGenai(Provider):
                 'chat-bison-001': {
                     'max_tokens': 4096,
                 },
+                'gemini-pro': {
+                    "max_tokens": 32768,
+                },
                 'gemini-1.0-pro': {
                     'max_tokens': 32768,
                 },
+                # TODO: Not available via langchain yet.
+                # 'gemini-pro-latest': {
+                #     "max_tokens": 1048576,
+                # },
                 'gemini-1.5-pro-latest': {
-                    "max_tokens": 131072,
+                    "max_tokens": 1048576,
                 },
-                'gemini-pro': {
-                    "max_tokens": 131072,
-                },
-                'gemini-pro-latest': {
-                    "max_tokens": 131072,
+                'models/gemini-1.5-flash-latest': {
+                    "max_tokens": 1048576,
                 },
             },
         }
@@ -66,12 +70,6 @@ class ProviderChatGoogleGenai(Provider):
 
     def llm_factory(self):
         return CustomChatGoogleGenerativeAI
-
-    # TODO: Remove this if Gemni Pro starts supporting system messages.
-    def make_llm(self, customizations=None, use_defaults=False):
-        customizations = customizations or {}
-        customizations.update({'convert_system_message_to_human': True})
-        return super().make_llm(customizations, use_defaults)
 
     def customization_config(self):
         return {
