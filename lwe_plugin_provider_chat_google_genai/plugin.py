@@ -48,7 +48,7 @@ class ProviderChatGoogleGenai(Provider):
                 'gemini-1.5-pro-latest': {
                     "max_tokens": 1048576,
                 },
-                'models/gemini-1.5-flash-latest': {
+                'gemini-1.5-flash-latest': {
                     "max_tokens": 1048576,
                 },
             },
