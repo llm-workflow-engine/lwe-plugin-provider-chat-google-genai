@@ -1,12 +1,17 @@
 from langchain_google_genai import ChatGoogleGenerativeAI
 
 from lwe.core.provider import Provider, PresetValue
+from lwe.core.async_compat import ensure_event_loop
 
 
-DEFAULT_GOOGLE_GENAI_MODEL = 'gemini-pro'
+DEFAULT_GOOGLE_GENAI_MODEL = 'models/gemini-pro'
 
 
 class CustomChatGoogleGenerativeAI(ChatGoogleGenerativeAI):
+
+    def __init__(self, **kwargs):
+        ensure_event_loop()
+        super().__init__(**kwargs)
 
     @property
     def _llm_type(self):
@@ -29,26 +34,26 @@ class ProviderChatGoogleGenai(Provider):
             "chat": True,
             'validate_models': True,
             'models': {
-                'text-bison-001': {
+                'models/text-bison-001': {
                     'max_tokens': 4096,
                 },
-                'chat-bison-001': {
+                'models/chat-bison-001': {
                     'max_tokens': 4096,
                 },
-                'gemini-pro': {
+                'models/gemini-pro': {
                     "max_tokens": 32768,
                 },
-                'gemini-1.0-pro': {
+                'models/gemini-1.0-pro': {
                     'max_tokens': 32768,
                 },
                 # TODO: Not available via langchain yet.
                 # 'gemini-pro-latest': {
                 #     "max_tokens": 1048576,
                 # },
-                'gemini-1.5-pro-latest': {
+                'models/gemini-1.5-pro-latest': {
                     "max_tokens": 1048576,
                 },
-                'gemini-1.5-flash-latest': {
+                'models/gemini-1.5-flash-latest': {
                     "max_tokens": 1048576,
                 },
             },
