@@ -85,4 +85,6 @@ class ProviderChatGoogleGenai(Provider):
             'top_k': PresetValue(int, min_value=1, max_value=40),
             'top_p': PresetValue(float, min_value=0.0, max_value=1.0),
             'n': PresetValue(int, 1, 10),
+            "tools": None,
+            "tool_choice": None,
         }
