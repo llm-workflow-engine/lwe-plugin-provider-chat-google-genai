@@ -1,3 +1,5 @@
+from google.generativeai.types import HarmCategory, HarmBlockThreshold
+
 from langchain_google_genai import ChatGoogleGenerativeAI
 
 from lwe.core.provider import Provider, PresetValue
@@ -5,6 +7,13 @@ from lwe.core.async_compat import ensure_event_loop
 
 
 DEFAULT_GOOGLE_GENAI_MODEL = 'models/gemini-pro'
+HARM_BLOCK_THRESHOLD_OPTIONS = [
+    'BLOCK_NONE',
+    'BLOCK_LOW_AND_ABOVE',
+    'BLOCK_MEDIUM_AND_ABOVE',
+    'BLOCK_ONLY_HIGH',
+    'HARM_BLOCK_THRESHOLD_UNSPECIFIED',
+]
 
 
 class CustomChatGoogleGenerativeAI(ChatGoogleGenerativeAI):
@@ -76,6 +85,26 @@ class ProviderChatGoogleGenai(Provider):
     def llm_factory(self):
         return CustomChatGoogleGenerativeAI
 
+    def configure_safety_settings(self, configured_safety_settings):
+        safety_settings = {}
+        for category, threshold in configured_safety_settings.items():
+            try:
+                harm_category = getattr(HarmCategory, category)
+                harm_block_threshold = getattr(HarmBlockThreshold, threshold)
+            except AttributeError as e:
+                raise ValueError(f"Invalid HarmCategory or HarmBlockThreshold: {e}")
+            safety_settings[harm_category] = harm_block_threshold
+        return safety_settings
+
+    def make_llm(self, customizations=None, tools=None, tool_choice=None, use_defaults=False):
+        customizations = customizations or {}
+        final_customizations = self.get_customizations()
+        final_customizations.update(customizations)
+        configured_safety_settings = final_customizations.pop('safety_settings', None)
+        if configured_safety_settings:
+            final_customizations['safety_settings'] = self.configure_safety_settings(configured_safety_settings)
+        return super().make_llm(final_customizations, tools=tools, tool_choice=tool_choice, use_defaults=use_defaults)
+
     def customization_config(self):
         return {
             'model': PresetValue(str, options=self.available_models),
@@ -85,6 +114,12 @@ class ProviderChatGoogleGenai(Provider):
             'top_k': PresetValue(int, min_value=1, max_value=40),
             'top_p': PresetValue(float, min_value=0.0, max_value=1.0),
             'n': PresetValue(int, 1, 10),
+            'safety_settings': {
+                'HARM_CATEGORY_DANGEROUS_CONTENT': PresetValue(str, options=HARM_BLOCK_THRESHOLD_OPTIONS, include_none=True),
+                'HARM_CATEGORY_HATE_SPEECH': PresetValue(str, options=HARM_BLOCK_THRESHOLD_OPTIONS, include_none=True),
+                'HARM_CATEGORY_HARASSMENT': PresetValue(str, options=HARM_BLOCK_THRESHOLD_OPTIONS, include_none=True),
+                'HARM_CATEGORY_SEXUALLY_EXPLICIT': PresetValue(str, options=HARM_BLOCK_THRESHOLD_OPTIONS, include_none=True),
+            },
             "tools": None,
             "tool_choice": None,
         }
