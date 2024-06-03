@@ -1,6 +1,4 @@
-from google.generativeai.types import HarmCategory, HarmBlockThreshold
-
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_google_genai import ChatGoogleGenerativeAI, HarmBlockThreshold, HarmCategory
 
 from lwe.core.provider import Provider, PresetValue
 from lwe.core.async_compat import ensure_event_loop
