@@ -40,35 +40,38 @@ class ProviderChatGoogleGenai(Provider):
         return {
             "chat": True,
             'validate_models': True,
-            'models': {
-                'models/text-bison-001': {
-                    'max_tokens': 4096,
-                },
-                'models/chat-bison-001': {
-                    'max_tokens': 4096,
-                },
-                'models/gemini-pro': {
-                    "max_tokens": 32768,
-                },
-                'models/gemini-1.0-pro': {
-                    'max_tokens': 32768,
-                },
-                # TODO: Not available via langchain yet.
-                # 'gemini-pro-latest': {
-                #     "max_tokens": 1048576,
-                # },
-                'models/gemini-1.5-pro-latest': {
-                    "max_tokens": 1048576,
-                },
-                'models/gemini-1.5-flash-latest': {
-                    "max_tokens": 1048576,
-                },
-            },
         }
 
     @property
     def default_model(self):
         return DEFAULT_GOOGLE_GENAI_MODEL
+
+    @property
+    def static_models(self):
+        return {
+            'models/text-bison-001': {
+                'max_tokens': 4096,
+            },
+            'models/chat-bison-001': {
+                'max_tokens': 4096,
+            },
+            'models/gemini-pro': {
+                "max_tokens": 32768,
+            },
+            'models/gemini-1.0-pro': {
+                'max_tokens': 32768,
+            },
+            # TODO: Not available via langchain yet.
+            # 'models/gemini-pro-latest': {
+            #     "max_tokens": 1048576,
+            # },
+            'models/gemini-1.5-pro-latest': {
+                "max_tokens": 1048576,
+            },
+            'models/gemini-1.5-flash-latest': {
+                "max_tokens": 1048576,
+            },
+        }
 
     def default_customizations(self, defaults=None):
         defaults = defaults or {}
