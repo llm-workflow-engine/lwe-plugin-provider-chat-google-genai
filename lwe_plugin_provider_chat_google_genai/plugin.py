@@ -1,10 +1,14 @@
+import google.generativeai as genai
+
 from langchain_google_genai import ChatGoogleGenerativeAI, HarmBlockThreshold, HarmCategory
 
 from lwe.core.provider import Provider, PresetValue
 from lwe.core.async_compat import ensure_event_loop
 
 
-DEFAULT_GOOGLE_GENAI_MODEL = 'models/gemini-pro'
+MODEL_FILTERS = [
+    "models/gemini-1.5"
+]
 HARM_BLOCK_THRESHOLD_OPTIONS = [
     'BLOCK_NONE',
     'BLOCK_LOW_AND_ABOVE',
@@ -44,34 +48,21 @@ class ProviderChatGoogleGenai(Provider):
 
     @property
     def default_model(self):
-        return DEFAULT_GOOGLE_GENAI_MODEL
+        return list(self.available_models)[0]
 
-    @property
-    def static_models(self):
-        return {
-            'models/text-bison-001': {
-                'max_tokens': 4096,
-            },
-            'models/chat-bison-001': {
-                'max_tokens': 4096,
-            },
-            'models/gemini-pro': {
-                "max_tokens": 32768,
-            },
-            'models/gemini-1.0-pro': {
-                'max_tokens': 32768,
-            },
-            # TODO: Not available via langchain yet.
-            # 'models/gemini-pro-latest': {
-            #     "max_tokens": 1048576,
-            # },
-            'models/gemini-1.5-pro-latest': {
-                "max_tokens": 1048576,
-            },
-            'models/gemini-1.5-flash-latest': {
-                "max_tokens": 1048576,
-            },
-        }
+    def fetch_models(self):
+        try:
+            model_data = genai.list_models()
+            if not model_data:
+                raise ValueError('Could not retrieve models')
+            models = {
+                model.name: {'max_tokens': model.input_token_limit}
+                for model in model_data
+                if any(substring in model.name for substring in MODEL_FILTERS)
+            }
+            return models
+        except Exception as e:
+            raise ValueError(f"Could not retrieve models: {e}")
 
     def default_customizations(self, defaults=None):
         defaults = defaults or {}
