@@ -7,7 +7,9 @@ from lwe.core.async_compat import ensure_event_loop
 
 
 MODEL_FILTERS = [
-    "models/gemini-1.5"
+    "models/gemini-1.5",
+    "models/gemini-2.0",
+    "models/gemini-exp-",
 ]
 HARM_BLOCK_THRESHOLD_OPTIONS = [
     'BLOCK_NONE',
