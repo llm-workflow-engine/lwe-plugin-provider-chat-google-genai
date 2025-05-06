@@ -1,4 +1,4 @@
-import google.generativeai as genai
+from google import genai
 
 from langchain_google_genai import ChatGoogleGenerativeAI, HarmBlockThreshold, HarmCategory
 
@@ -52,7 +52,8 @@ class ProviderChatGoogleGenai(Provider):
 
     def fetch_models(self):
         try:
-            model_data = genai.list_models()
+            client = genai.Client()
+            model_data = client.models.list()
             if not model_data:
                 raise ValueError('Could not retrieve models')
             models = {
@@ -102,7 +103,8 @@ class ProviderChatGoogleGenai(Provider):
             'model': PresetValue(str, options=self.available_models),
             'google_api_key': PresetValue(str, private=True),
             'temperature': PresetValue(float, min_value=0.0, max_value=1.0),
-            'max_output_tokens': PresetValue(int, min_value=1, max_value=2048, include_none=True),
+            'max_output_tokens': PresetValue(int, min_value=1, include_none=True),
+            'thinking_budget': PresetValue(int, min_value=0, include_none=True),
             'top_k': PresetValue(int, min_value=1, max_value=40),
             'top_p': PresetValue(float, min_value=0.0, max_value=1.0),
             'n': PresetValue(int, 1, 10),
