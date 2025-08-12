@@ -1,4 +1,6 @@
-from google import genai
+# TODO: Re-enable this when langchain-google-genai is updated to the new SDK
+# from google import genai
+from google.ai import generativelanguage_v1 as glm
 
 from langchain_google_genai import ChatGoogleGenerativeAI, HarmBlockThreshold, HarmCategory
 
@@ -52,8 +54,11 @@ class ProviderChatGoogleGenai(Provider):
 
     def fetch_models(self):
         try:
-            client = genai.Client()
-            model_data = client.models.list()
+            # TODO: Re-enable this when langchain-google-genai is updated to the new SDK
+            # client = genai.Client()
+            # model_data = client.models.list()
+            client = glm.ModelServiceClient()
+            model_data = client.list_models()
             if not model_data:
                 raise ValueError('Could not retrieve models')
             models = {
