@@ -1,7 +1,8 @@
-# TODO: Re-enable this when langchain-google-genai is updated to the new SDK
-# from google import genai
-from google.ai import generativelanguage_v1 as glm
+from google import genai
 
+from typing import Any
+
+from langchain_core.messages import AIMessage, AIMessageChunk
 from langchain_google_genai import ChatGoogleGenerativeAI, HarmBlockThreshold, HarmCategory
 
 from lwe.core.provider import Provider, PresetValue
@@ -54,11 +55,8 @@ class ProviderChatGoogleGenai(Provider):
 
     def fetch_models(self):
         try:
-            # TODO: Re-enable this when langchain-google-genai is updated to the new SDK
-            # client = genai.Client()
-            # model_data = client.models.list()
-            client = glm.ModelServiceClient()
-            model_data = client.list_models()
+            client = genai.Client()
+            model_data = client.models.list()
             if not model_data:
                 raise ValueError('Could not retrieve models')
             models = {
@@ -82,6 +80,21 @@ class ProviderChatGoogleGenai(Provider):
 
     def llm_factory(self):
         return CustomChatGoogleGenerativeAI
+
+    def format_responses_content(self, content_list: list[Any]):
+        return "".join([content['text'] for content in content_list if 'text' in content])
+
+    def handle_non_streaming_response(self, response: AIMessage):
+        if isinstance(response.content, list):
+            response.content = self.format_responses_content(response.content)
+        return response
+
+    def handle_streaming_chunk(self, chunk: AIMessageChunk | str, _previous_chunks: list[AIMessageChunk | str]) -> str:
+        if isinstance(chunk, str):
+            return chunk
+        elif isinstance(chunk.content, str):
+            return chunk.content
+        return self.format_responses_content(chunk.content)
 
     def configure_safety_settings(self, configured_safety_settings):
         safety_settings = {}
