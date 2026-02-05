@@ -1,4 +1,1 @@
 langchain-google-genai>=3.1.0
-# TODO: Remove these if https://github.com/grpc/grpc/issues/38703 is fixed
-grpcio<=1.74.0
-grpcio-status<=1.74.0
