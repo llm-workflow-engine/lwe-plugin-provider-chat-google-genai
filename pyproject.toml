@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=77.0.3", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lwe-plugin-provider-chat-google-genai"
+dynamic = ["version"]
+description = "LWE plugin: Chat Google GenAI Provider plugin"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [
+  { name = "Chad Phillips", email = "chad@apartmentlines.com" },
+]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
+]
+dependencies = [
+  "langchain-google-genai>=4.4.2",
+  "google-genai>=2.30.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-datadir",
+    "pip-tools",
+    "basedpyright",
+    "flake8",
+    "black",
+]
+
+[project.urls]
+Homepage = "https://github.com/llm-workflow-engine/lwe-plugin-provider-chat-google-genai"
+Repository = "https://github.com/llm-workflow-engine/lwe-plugin-provider-chat-google-genai"
+
+[project.entry-points."lwe_plugins"]
+lwe_plugin_provider_chat_google_genai = "lwe_plugin_provider_chat_google_genai.plugin:ProviderChatGoogleGenai"
+
+[tool.setuptools.dynamic]
+version = { attr = "lwe_plugin_provider_chat_google_genai.version.__version__" }
+
+[tool.setuptools.packages.find]
+include = ["lwe_plugin_provider_chat_google_genai*"]
